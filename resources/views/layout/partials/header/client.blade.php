@@ -61,7 +61,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
-                    <span class="hidden md:inline">Livraison dans toute le Bénin</span>
+                    <span class="hidden md:inline">Livraison dans tous le Bénin</span>
                     <span class="md:hidden">Bénin</span>
                 </div>
                 

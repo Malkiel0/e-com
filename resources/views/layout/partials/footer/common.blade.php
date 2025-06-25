@@ -10,7 +10,7 @@
     </div>
     
     <div class="relative">
-        <!-- Section newsletter -->
+        {{-- <!-- Section newsletter -->
         <div class="border-b border-white/10">
             <div class="container mx-auto px-4 lg:px-8 py-12">
                 <div class="max-w-4xl mx-auto text-center">
@@ -194,7 +194,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> --}}
         
         <!-- Garanties et certifications -->
         <div class="border-t border-white/10">
@@ -221,13 +221,13 @@
                         <h4 class="font-semibold text-sm text-white mb-1">Produits Authentiques</h4>
                         <p class="text-xs text-gray-400">Garantie d'authenticité</p>
                     </div>
-                    <div class="text-center">
+                    {{-- <div class="text-center">
                         <div class="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
                             <span class="text-xl">💝</span>
                         </div>
                         <h4 class="font-semibold text-sm text-white mb-1">Échantillons Offerts</h4>
                         <p class="text-xs text-gray-400">Avec chaque commande</p>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

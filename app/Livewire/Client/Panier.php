@@ -23,7 +23,7 @@ class Panier extends Component
     public $showMessage = false;
     
     // Propriétés WhatsApp
-    public $whatsappNumber = '+33123456789';
+    public $whatsappNumber = '+2290190927406';
     
     // Propriétés pour les animations
     public $updatingQuantities = [];

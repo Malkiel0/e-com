@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-white">
     {{-- Header avec recherche et filtres --}}
-    <div class="bg-white/80 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-200">
+    <div class="bg-white/80 backdrop-blur-sm z-40 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-6">
             <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
                 {{-- Titre et statistiques --}}
