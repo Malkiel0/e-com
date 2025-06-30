@@ -258,8 +258,15 @@
     <!-- Scripts -->
     @livewireScripts
     
-    <!-- Alpine.js et scripts personnalisés -->
+    <!-- Alpine.js (CDN) -->
+    {{--
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    --}}
+    <!--
+        Si tu utilises Vite pour importer Alpine dans app.js, laisse ce script commenté.
+        Si tu préfères le CDN, décommente la ligne ci-dessus.
+        (Actuellement, Alpine n'est PAS importé dans app.js, donc tu peux activer le CDN si besoin)
+    -->
     
     <!-- Script pour les animations au scroll -->
     <script>
@@ -296,5 +303,6 @@
     
     @yield('scripts')
     @stack('scripts')
+    
 </body>
 </html>
