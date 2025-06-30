@@ -37,7 +37,7 @@ class ProduitsDeBeauté extends Component
     public $showCartSuccess = false;
 
     // Propriétés pour WhatsApp
-    public $whatsappNumber = '+2290190927406';
+    public $whatsappNumber = '2290190927406';
 
     protected $queryString = [
         'search' => ['except' => ''],

@@ -34,15 +34,23 @@ class ProduitsId extends Component
     public $recentlyViewedProducts = [];
     
     // Propriétés WhatsApp
-    public $whatsappNumber = '+2290190927406';
+    public $whatsappNumber = '2290190927406';
 
-    public function mount($id = null)
-    {
-        if ($id) {
-            $this->productId = $id;
-            $this->loadProduct();
-        }
+    public function mount(Product $product = null, $id = null)
+{
+    if ($product && $product->exists) {
+        // Route avec slug : /produits/{product:slug}
+        $this->productId = $product->id;
+        $this->product = $product;
+    } elseif ($id) {
+        // Route avec ID : /produits/{id}
+        $this->productId = $id;
     }
+    
+    if (!$this->product) {
+        $this->loadProduct();
+    }
+}
 
     public function loadProduct()
     {

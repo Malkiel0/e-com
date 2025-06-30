@@ -28,7 +28,7 @@ Route::get('products', Products::class)->name('createProduct');
 Route::get('categories', Categories::class)->name('createCategory');
 Route::get('promotions', Promotions::class)->name('promotions');
 Route::get('parfums', Parfums::class)->name('parfums');
-Route::get('produits/{id}', ProduitsId::class)->name('produitsId');
+Route::get('produits/{product:slug}', ProduitsId::class)->name('product.show');
 Route::get('panier', Panier::class)->name('panier');
 Route::get('produitsDeBeauté', ProduitsDeBeauté::class)->name('produitsDeBeauté');
 Route::get('tous les produits',ClientDashboar::class)->name('tous les produits');

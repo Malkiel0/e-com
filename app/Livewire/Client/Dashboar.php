@@ -33,7 +33,7 @@ class Dashboar extends Component
     public $showCartSuccess = false;
 
     // Propriétés pour WhatsApp
-    public $whatsappNumber = '+2290190927406'; // À configurer
+    public $whatsappNumber = '2290190927406'; // À configurer
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -171,6 +171,11 @@ class Dashboar extends Component
         }
     }
 
+    public function getUrlAttribute()
+    {
+        return route('product.show', $this->slug);  // ✅ CORRECT avec la nouvelle route
+    }
+
     public function closeQuickView()
     {
         $this->showQuickView = false;
@@ -206,9 +211,15 @@ class Dashboar extends Component
     }
 
     public function contactWhatsApp($productId = null)
-    {
+{
+    try {
         if ($productId) {
             $product = Product::find($productId);
+            if (!$product) {
+                session()->flash('error', 'Produit non trouvé');
+                return;
+            }
+            
             $message = "🌸 Bonjour ! Je suis intéressé(e) par ce produit :\n\n";
             $message .= "📦 *{$product->name}*\n";
             $message .= "💰 Prix : {$product->price}€\n";
@@ -218,11 +229,30 @@ class Dashboar extends Component
             $message = "🌸 Bonjour ! J'aimerais avoir des informations sur vos produits.";
         }
 
-        $encodedMessage = urlencode($message);
+        // ✅ URL propre et encodée
+        $encodedMessage = rawurlencode($message);
         $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
         
-        $this->dispatch('open-whatsapp', ['url' => $whatsappUrl]);
+        // 🐛 DEBUG
+        \Log::info('WhatsApp Debug:', [
+            'productId' => $productId,
+            'message' => $message,
+            'url' => $whatsappUrl,
+            'whatsappNumber' => $this->whatsappNumber
+        ]);
+        
+        // ✅ DISPATCH CORRIGÉ avec structure explicite
+        $this->dispatch('open-whatsapp', 
+            url: $whatsappUrl,  // ← Nouveau format Livewire
+            message: $message,
+            debug: 'URL générée avec succès'
+        );
+        
+    } catch (\Exception $e) {
+        \Log::error('Erreur WhatsApp:', ['error' => $e->getMessage()]);
+        session()->flash('error', 'Erreur lors de la génération du lien WhatsApp');
     }
+}
 
     public function getProductsProperty()
     {

@@ -20,7 +20,7 @@ class HeaderCart extends Component
     public $showMessage = false;
     
     // Propriétés WhatsApp
-    public $whatsappNumber = '+2290190927406';
+    public $whatsappNumber = '2290190927406';
 
     public function mount()
     {

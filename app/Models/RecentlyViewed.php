@@ -6,8 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class RecentlyViewed extends Model
 {
-    protected $fillable = ['user_id', 'session_id', 'product_id', 'viewed_at'];
-    protected $casts = ['viewed_at' => 'datetime'];
+    // ✅ Spécifier le nom exact de la table
+    protected $table = 'recently_viewed';
+
+    protected $fillable = [
+        'user_id', 
+        'session_id', 
+        'product_id', 
+        'viewed_at'
+    ];
+
+    protected $casts = [
+        'viewed_at' => 'datetime'
+    ];
 
     public function user()
     {
