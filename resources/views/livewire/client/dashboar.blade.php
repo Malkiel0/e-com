@@ -209,7 +209,7 @@
                                             wire:click="viewProduct({{ $product->id }})">
 
                                             @if ($product->primaryImage)
-                                                <img src="{{ Storage::url($product->primaryImage->file_path) }}"
+                                                <img src="{{ asset('storage/' . $product->primaryImage->file_path) }}"
                                                     alt="{{ $product->name }}"
                                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                     loading="lazy">
@@ -392,7 +392,7 @@
                                             <div class="md:w-48 h-48 relative overflow-hidden cursor-pointer"
                                                 wire:click="viewProduct({{ $product->id }})">
                                                 @if ($product->primaryImage)
-                                                    <img src="{{ Storage::url($product->primaryImage->file_path) }}"
+                                                    <img src="{{ asset('storage/' . $product->primaryImage->file_path) }}"
                                                         alt="{{ $product->name }}"
                                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                                                         loading="lazy">
@@ -603,7 +603,7 @@
                             {{-- Image principale --}}
                             <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
                                 @if ($selectedProduct->primaryImage)
-                                    <img src="{{ Storage::url($selectedProduct->primaryImage->file_path) }}"
+                                    <img src="{{ asset('storage/' . $selectedProduct->primaryImage->file_path) }}"
                                         alt="{{ $selectedProduct->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div
@@ -621,7 +621,7 @@
                                     @foreach ($selectedProduct->images->take(4) as $image)
                                         <div
                                             class="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-75 transition-opacity">
-                                            <img src="{{ Storage::url($image->file_path) }}"
+                                            <img src="{{ asset('storage/' . $image->file_path) }}"
                                                 alt="{{ $selectedProduct->name }}"
                                                 class="w-full h-full object-cover">
                                         </div>

@@ -241,9 +241,9 @@ class Parfums extends Component
                                   ->orWhere('name', 'LIKE', '%eau de%')
                                   ->pluck('id');
 
+        // [TEST TEMPORAIRE] On retire les scopes active() et inStock() pour afficher TOUS les produits de la catégorie parfum, quel que soit leur status ou stock.
+        // Cela permet de diagnostiquer si le problème vient du champ status ou d'un autre filtre.
         $query = Product::with(['category', 'brand', 'images', 'reviews'])
-                       ->active()
-                       ->inStock()
                        ->whereIn('category_id', $parfumCategories);
 
         // Recherche

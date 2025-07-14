@@ -256,9 +256,9 @@ class Dashboar extends Component
 
     public function getProductsProperty()
     {
-        $query = Product::with(['category', 'brand', 'images', 'reviews'])
-                       ->active()
-                       ->inStock();
+        // [TEST TEMPORAIRE] On retire le scope active() pour afficher TOUS les produits, quel que soit leur status.
+        // Cela permet de diagnostiquer si le problème vient du champ status ou d'un autre filtre.
+        $query = Product::with(['category', 'brand', 'images', 'reviews']);
 
         // Recherche
         if ($this->search) {

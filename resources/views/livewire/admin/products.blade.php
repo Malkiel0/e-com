@@ -1185,9 +1185,10 @@
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         @foreach ($existingImages as $image)
                                             <div class="relative group">
-                                                <img src="{{ Storage::url($image['image_path']) }}"
-                                                    alt="Image produit"
-                                                    class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                                                {{-- Sécurisation de l'accès à l'image, affichage d'une image par défaut si la clé n'existe pas ou si $image est un objet --}}
+<img src="{{ Storage::url($image['image_path'] ?? ($image->image_path ?? 'default.jpg')) }}"
+     alt="Image produit"
+     class="w-full h-32 object-cover rounded-lg border border-gray-300">
                                                 <button type="button"
                                                     wire:click="removeExistingImage({{ $image['id'] }})"
                                                     class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
