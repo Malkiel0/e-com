@@ -1,3 +1,51 @@
+@push('styles')
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Animation pour les mises à jour de quantité */
+    .quantity-updating {
+        animation: pulse-blue 0.6s ease-in-out;
+    }
+
+    @keyframes pulse-blue {
+        0%, 100% { 
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+        50% { 
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+    }
+
+    /* Animation pour les articles supprimés */
+    .cart-item {
+        transition: all 0.3s ease-out;
+    }
+
+    .cart-item.removing {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    /* Style pour les boutons de quantité */
+    .quantity-btn {
+        transition: all 0.2s ease;
+    }
+
+    .quantity-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .quantity-btn:active {
+        transform: scale(0.95);
+    }
+</style>
+@endpush
+
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
     {{-- Message de feedback --}}
     @if($showMessage)
@@ -154,9 +202,9 @@
                                             {{-- Prix et quantité --}}
                                             <div class="flex items-center justify-between mt-4">
                                                 <div class="flex items-center space-x-2">
-                                                    <span class="text-2xl font-bold text-gray-900">{{ $item['product']['price'] }}FCFA</span>
+                                                    <span class="text-2xl font-bold text-gray-900">{{ number_format($item['product']['price'], 0, ',', ' ') }}FCFA</span>
                                                     @if(isset($item['product']['original_price']) && $item['product']['original_price'] > $item['product']['price'])
-                                                        <span class="text-lg text-gray-500 line-through">{{ $item['product']['original_price'] }}FCFA</span>
+                                                        <span class="text-lg text-gray-500 line-through">{{ number_format($item['product']['original_price'], 0, ',', ' ') }}FCFA</span>
                                                     @endif
                                                 </div>
 
@@ -359,7 +407,7 @@
                                     {{ $product['brand']['name'] ?? 'Marque inconnue' }}
                                 </p>
                                 <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ $product['name'] ?? 'Nom indisponible' }}</h3>
-                                <p class="text-lg font-bold text-gray-900">{{ $product['price'] ?? '0' }}FCFA</p>
+                                <p class="text-lg font-bold text-gray-900">{{ number_format($product['price'], 0, ',', ' ') }}FCFA</p>
                             </div>
                         </div>
                     @endforeach
@@ -421,50 +469,3 @@
 </script>
 @endpush
 
-@push('styles')
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    /* Animation pour les mises à jour de quantité */
-    .quantity-updating {
-        animation: pulse-blue 0.6s ease-in-out;
-    }
-
-    @keyframes pulse-blue {
-        0%, 100% { 
-            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-        }
-        50% { 
-            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-        }
-    }
-
-    /* Animation pour les articles supprimés */
-    .cart-item {
-        transition: all 0.3s ease-out;
-    }
-
-    .cart-item.removing {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-
-    /* Style pour les boutons de quantité */
-    .quantity-btn {
-        transition: all 0.2s ease;
-    }
-
-    .quantity-btn:hover {
-        transform: scale(1.1);
-    }
-
-    .quantity-btn:active {
-        transform: scale(0.95);
-    }
-</style>
-@endpush
