@@ -37,7 +37,7 @@ class Parfums extends Component
     public $showCartSuccess = false;
 
     // Propriétés pour WhatsApp
-    public $whatsappNumber = '2290190927406';
+    public $whatsappNumber = '2290152017507';
 
     protected $queryString = [
         'search' => ['except' => ''],

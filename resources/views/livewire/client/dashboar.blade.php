@@ -382,6 +382,7 @@
                                                 </button>
                                             @endif
                                         </div>
+
                                     </div>
                                 @else
                                     {{-- Vue liste --}}
@@ -391,8 +392,9 @@
                                             {{-- Image --}}
                                             <div class="md:w-48 h-48 relative overflow-hidden cursor-pointer"
                                                 wire:click="viewProduct({{ $product->id }})">
+                                                {{-- @dump($product->primaryImage) --}}
                                                 @if ($product->primaryImage)
-                                                    <img src="{{ asset('storage/' . $product->primaryImage->file_path) }}"
+                                                    <img src="{{asset(Storage::url($product->primaryImage->file_path)) }}"
                                                         alt="{{ $product->name }}"
                                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                                                         loading="lazy">

@@ -33,7 +33,7 @@ class Dashboar extends Component
     public $showCartSuccess = false;
 
     // Propriétés pour WhatsApp
-    public $whatsappNumber = '2290190927406'; // À configurer
+    public $whatsappNumber = '2290152017507'; // À configurer
 
     protected $queryString = [
         'search' => ['except' => ''],

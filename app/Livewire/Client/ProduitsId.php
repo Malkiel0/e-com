@@ -34,7 +34,7 @@ class ProduitsId extends Component
     public $recentlyViewedProducts = [];
     
     // Propriétés WhatsApp
-    public $whatsappNumber = '2290190927406';
+    public $whatsappNumber = '2290152017507';
 
     public function mount(Product $product = null, $id = null)
 {
