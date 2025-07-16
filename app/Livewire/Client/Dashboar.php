@@ -20,7 +20,7 @@ class Dashboar extends Component
     public $selectedCategory = '';
     public $selectedBrand = '';
     public $minPrice = 0;
-    public $maxPrice = 1000;
+    public $maxPrice = 1000000;
     public $sortBy = 'name';
     public $sortDirection = 'asc';
     public $viewMode = 'grid'; // grid ou list
@@ -45,7 +45,7 @@ class Dashboar extends Component
 
     public function mount()
     {
-        $this->maxPrice = Product::max('price') ?? 1000;
+        $this->maxPrice = Product::max('price') ?? 1000000;
     }
 
     

@@ -19,7 +19,7 @@ class Parfums extends Component
     public $search = '';
     public $selectedBrand = '';
     public $minPrice = 0;
-    public $maxPrice = 1000;
+    public $maxPrice = 1000000;
     public $sortBy = 'name';
     public $sortDirection = 'asc';
     public $viewMode = 'grid';
@@ -55,7 +55,7 @@ class Parfums extends Component
                                   ->orWhere('name', 'LIKE', '%fragrance%')
                                   ->pluck('id');
         
-        $this->maxPrice = Product::whereIn('category_id', $parfumCategories)->max('price') ?? 1000;
+        $this->maxPrice = Product::whereIn('category_id', $parfumCategories)->max('price') ?? 1000000;
     }
 
     public function updatedSearch()

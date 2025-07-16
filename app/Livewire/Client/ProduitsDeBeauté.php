@@ -20,7 +20,7 @@ class ProduitsDeBeauté extends Component
     public $selectedCategory = '';
     public $selectedBrand = '';
     public $minPrice = 0;
-    public $maxPrice = 1000;
+    public $maxPrice = 1000000;
     public $sortBy = 'name';
     public $sortDirection = 'asc';
     public $viewMode = 'grid';
@@ -56,7 +56,7 @@ class ProduitsDeBeauté extends Component
                                   ->where('name', 'NOT LIKE', '%eau de%')
                                   ->pluck('id');
         
-        $this->maxPrice = Product::whereIn('category_id', $beautyCategories)->max('price') ?? 1000;
+        $this->maxPrice = Product::whereIn('category_id', $beautyCategories)->max('price') ?? 1000000;
     }
 
     public function updatedSearch()

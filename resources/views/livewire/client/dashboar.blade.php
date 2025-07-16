@@ -155,7 +155,7 @@
 
                     {{-- Bouton reset filtres --}}
                     <button
-                        wire:click="$set('search', ''); $set('selectedCategory', ''); $set('selectedBrand', ''); $set('minPrice', 0); $set('maxPrice', 1000)"
+                        wire:click="$set('search', ''); $set('selectedCategory', ''); $set('selectedBrand', ''); $set('minPrice', 0); $set('maxPrice', 1000000)"
                         class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-medium transition-all">
                         🔄 Réinitialiser
                     </button>
@@ -567,7 +567,7 @@
                                 Essayez de modifier vos filtres ou votre recherche.
                             </p>
                             <button
-                                wire:click="$set('search', ''); $set('selectedCategory', ''); $set('selectedBrand', ''); $set('minPrice', 0); $set('maxPrice', 1000)"
+                                wire:click="$set('search', ''); $set('selectedCategory', ''); $set('selectedBrand', ''); $set('minPrice', 0); $set('maxPrice', 1000000)"
                                 class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 rounded-2xl font-semibold transition-all transform hover:scale-105">
                                 🔄 Réinitialiser les filtres
                             </button>

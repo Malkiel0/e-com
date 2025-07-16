@@ -213,7 +213,7 @@
 
                     {{-- Bouton reset filtres --}}
                     <button
-                        wire:click="$set('search', ''); $set('selectedBrand', ''); $set('selectedConcentration', ''); $set('selectedVolume', ''); $set('minPrice', 0); $set('maxPrice', 1000)"
+                        wire:click="$set('search', ''); $set('selectedBrand', ''); $set('selectedConcentration', ''); $set('selectedVolume', ''); $set('minPrice', 0); $set('maxPrice', 1000000)"
                         class="w-full bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 py-3 rounded-xl font-medium transition-all flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -649,7 +649,7 @@
                                 Essayez de modifier vos filtres pour découvrir notre collection.
                             </p>
                             <button
-                                wire:click="$set('search', ''); $set('selectedBrand', ''); $set('selectedConcentration', ''); $set('selectedVolume', ''); $set('minPrice', 0); $set('maxPrice', 1000)"
+                                wire:click="$set('search', ''); $set('selectedBrand', ''); $set('selectedConcentration', ''); $set('selectedVolume', ''); $set('minPrice', 0); $set('maxPrice', 1000000)"
                                 class="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-xl">
                                 🔄 Réinitialiser les filtres
                             </button>
