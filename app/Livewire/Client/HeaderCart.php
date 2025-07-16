@@ -158,8 +158,8 @@ class HeaderCart extends Component
             
             $message .= "{$categoryIcon} *{$productName}*\n";
             $message .= "   └ Marque: {$brandName}\n";
-            $message .= "   └ Prix: {$productPrice}€ x {$productQuantity}\n";
-            $message .= "   └ Sous-total: {$itemTotal}€\n\n";
+            $message .= "   └ Prix: {$productPrice} FCFA x {$productQuantity}\n";
+            $message .= "   └ Sous-total: {$itemTotal} FCFA\n\n";
         }
 
         $taxAmount = ($this->cartTotal * 20) / 100; // TVA 20%
@@ -167,16 +167,16 @@ class HeaderCart extends Component
         $finalTotal = $this->cartTotal + $taxAmount + $shippingCost;
 
         $message .= "💰 *RÉCAPITULATIF:*\n";
-        $message .= "├ Sous-total: " . number_format($this->cartTotal, 2) . "€\n";
-        $message .= "├ TVA (20%): " . number_format($taxAmount, 2) . "€\n";
+        $message .= "├ Sous-total: " . number_format($this->cartTotal, 2) . "FCFA\n";
+        $message .= "├ TVA (20%): " . number_format($taxAmount, 2) . "FCFA\n";
         
         if ($shippingCost > 0) {
-            $message .= "├ Livraison: " . number_format($shippingCost, 2) . "€\n";
+            $message .= "├ Livraison: " . number_format($shippingCost, 2) . "FCFA\n";
         } else {
             $message .= "├ Livraison: GRATUITE ✅\n";
         }
         
-        $message .= "└ **TOTAL: " . number_format($finalTotal, 2) . "€**\n\n";
+        $message .= "└ **TOTAL: " . number_format($finalTotal, 2) . "FCFA**\n\n";
         $message .= "📞 J'aimerais finaliser cette commande. Merci !";
 
         $encodedMessage = urlencode($message);

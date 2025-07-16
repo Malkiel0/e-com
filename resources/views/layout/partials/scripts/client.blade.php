@@ -135,17 +135,17 @@
                 cart.forEach((item, index) => {
                     message += `${index + 1}. *${item.name}*\n`;
                     message += `   • Quantité: ${item.quantity}\n`;
-                    message += `   • Prix unitaire: ${item.price}€\n`;
-                    message += `   • Sous-total: ${(item.price * item.quantity).toFixed(2)}€\n\n`;
+                    message += `   • Prix unitaire: ${item.price} FCFA\n`;
+                    message += `   • Sous-total: ${(item.price * item.quantity).toFixed(2)} FCFA\n\n`;
                 });
                 
-                message += `💰 *Total: ${total.toFixed(2)}€*\n\n`;
+                message += `💰 *Total: ${total.toFixed(2)} FCFA*\n\n`;
                 
                 if (total >= BeautyStore.config.freeShippingThreshold) {
                     message += `🚚 Livraison gratuite incluse !\n\n`;
                 } else {
                     const remaining = BeautyStore.config.freeShippingThreshold - total;
-                    message += `🚚 Ajoutez ${remaining.toFixed(2)}€ pour la livraison gratuite\n\n`;
+                    message += `🚚 Ajoutez ${remaining.toFixed(2)} FCFA pour la livraison gratuite\n\n`;
                 }
                 
                 message += `Merci de me confirmer la disponibilité et les modalités de livraison.\n\n`;

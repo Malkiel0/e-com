@@ -127,9 +127,9 @@ class Promotions extends Component
         ],
         'fixed_amount' => [
             'name' => 'Montant fixe',
-            'description' => 'Réduction d\'un montant fixe (ex: 10€)',
+            'description' => 'Réduction d\'un montant fixe (ex: 10 FCFA)',
             'icon' => '💰',
-            'example' => '10€ de réduction'
+            'example' => '10 FCFA de réduction'
         ],
         'free_shipping' => [
             'name' => 'Livraison gratuite',
@@ -147,7 +147,7 @@ class Promotions extends Component
             'name' => 'Pack/Bundle',
             'description' => 'Prix spécial pour un lot de produits',
             'icon' => '📦',
-            'example' => 'Pack 3 produits à 50€'
+            'example' => 'Pack 3 produits à 50 FCFA'
         ]
     ];
 

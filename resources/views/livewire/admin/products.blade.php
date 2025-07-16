@@ -334,13 +334,13 @@
             <!-- Price Range -->
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Prix minimum (€)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Prix minimum (FCFA)</label>
                     <input wire:model.live.debounce.500ms="priceMin" type="number" min="0" step="0.01"
                         placeholder="0.00"
                         class="block w-full px-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Prix maximum (€)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Prix maximum (FCFA)</label>
                     <input wire:model.live.debounce.500ms="priceMax" type="number" min="0" step="0.01"
                         placeholder="999.99"
                         class="block w-full px-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500">
@@ -590,10 +590,10 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
                                     <span
-                                        class="text-lg font-bold text-gray-900">{{ number_format($product->price, 2) }}€</span>
+                                        class="text-lg font-bold text-gray-900">{{ number_format($product->price, 2) }}FCFA</span>
                                     @if ($product->original_price)
                                         <span
-                                            class="text-sm text-gray-500 line-through">{{ number_format($product->original_price, 2) }}€</span>
+                                            class="text-sm text-gray-500 line-through">{{ number_format($product->original_price, 2) }}FCFA</span>
                                     @endif
                                 </div>
                                 <div class="flex items-center text-sm text-gray-600">
@@ -700,10 +700,10 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {{ number_format($product->price, 2) }}€</div>
+                                        {{ number_format($product->price, 2) }}FCFA</div>
                                     @if ($product->original_price)
                                         <div class="text-sm text-gray-500 line-through">
-                                            {{ number_format($product->original_price, 2) }}€</div>
+                                            {{ number_format($product->original_price, 2) }}FCFA</div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -1064,7 +1064,7 @@
                                                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
                                                 </path>
                                             </svg>
-                                            <span>Prix de vente (€) *</span>
+                                            <span>Prix de vente (FCFA) *</span>
                                         </span>
                                     </label>
                                     <div class="relative">
@@ -1073,7 +1073,7 @@
                                             class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 @error('price') border-red-500 @enderror">
                                         <div
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500 text-lg">€</span>
+                                            <span class="text-gray-500 text-lg">FCFA</span>
                                         </div>
                                     </div>
                                     @error('price')
@@ -1091,7 +1091,7 @@
                                                     d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a2.5 2.5 0 005 0 2.5 2.5 0 00-5 0z">
                                                 </path>
                                             </svg>
-                                            <span>Prix barré (€)</span>
+                                            <span>Prix barré (FCFA)</span>
                                         </span>
                                     </label>
                                     <div class="relative">
@@ -1100,7 +1100,7 @@
                                             class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
                                         <div
                                             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500 text-lg">€</span>
+                                            <span class="text-gray-500 text-lg">FCFA</span>
                                         </div>
                                     </div>
                                     <p class="mt-1 text-xs text-gray-500">Prix de référence pour montrer une promotion

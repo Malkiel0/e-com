@@ -254,22 +254,22 @@ class Panier extends Component
             
             $message .= "{$categoryIcon} *{$productName}*\n";
             $message .= "   └ Marque: {$brandName}\n";
-            $message .= "   └ Prix unitaire: {$productPrice}€\n";
+            $message .= "   └ Prix unitaire: {$productPrice} FCFA\n";
             $message .= "   └ Quantité: {$productQuantity}\n";
-            $message .= "   └ Sous-total: {$itemTotal}€\n\n";
+            $message .= "   └ Sous-total: {$itemTotal} FCFA\n\n";
         }
 
         $message .= "💰 *RÉCAPITULATIF:*\n";
-        $message .= "├ Sous-total: " . number_format($this->subtotal, 2) . "€\n";
-        $message .= "├ TVA (20%): " . number_format($this->taxAmount, 2) . "€\n";
+        $message .= "├ Sous-total: " . number_format($this->subtotal, 2) . "FCFA\n";
+        $message .= "├ TVA (20%): " . number_format($this->taxAmount, 2) . "FCFA\n";
         
         if ($this->shippingCost > 0) {
-            $message .= "├ Livraison: " . number_format($this->shippingCost, 2) . "€\n";
+            $message .= "├ Livraison: " . number_format($this->shippingCost, 2) . "FCFA\n";
         } else {
             $message .= "├ Livraison: GRATUITE ✅\n";
         }
         
-        $message .= "└ **TOTAL: " . number_format($this->total, 2) . "€**\n\n";
+        $message .= "└ **TOTAL: " . number_format($this->total, 2) . "FCFA**\n\n";
         
         $message .= "📍 *Informations de livraison à discuter*\n";
         $message .= "💳 *Mode de paiement à convenir*\n\n";

@@ -131,9 +131,9 @@
                     
                     {{-- Prix --}}
                     <div class="flex items-center space-x-4 mb-6">
-                        <span class="text-4xl font-bold text-gray-900">{{ $product->price }}€</span>
+                        <span class="text-4xl font-bold text-gray-900">{{ $product->price }}FCFA</span>
                         @if($product->original_price && $product->price < $product->original_price)
-                            <span class="text-2xl text-gray-500 line-through">{{ $product->original_price }}€</span>
+                            <span class="text-2xl text-gray-500 line-through">{{ $product->original_price }}FCFA</span>
                             <span class="bg-red-500 text-white px-4 py-2 rounded-full text-lg font-bold">
                                 -{{ $product->discount_percentage }}%
                             </span>
@@ -279,7 +279,7 @@
                         @if($product->is_in_stock)
                             <button wire:click="addToCart"
                                     class="w-full py-4 px-6 rounded-2xl font-bold text-white text-lg transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl bg-gradient-to-r {{ strpos(strtolower($product->category->name), 'parfum') !== false ? 'from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700' : 'from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600' }}">
-                                🛒 Ajouter au panier - {{ number_format($product->price * $quantity, 2) }}€
+                                🛒 Ajouter au panier - {{ number_format($product->price * $quantity, 2) }}FCFA
                             </button>
                         @else
                             <button disabled class="w-full bg-gray-300 text-gray-500 py-4 px-6 rounded-2xl font-bold text-lg cursor-not-allowed">
@@ -428,7 +428,7 @@
                                     {{ $relatedProduct->brand->name }}
                                 </p>
                                 <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ $relatedProduct->name }}</h3>
-                                <p class="text-lg font-bold text-gray-900">{{ $relatedProduct->price }}€</p>
+                                <p class="text-lg font-bold text-gray-900">{{ $relatedProduct->price }}FCFA</p>
                             </div>
                         </div>
                     @endforeach

@@ -44,15 +44,15 @@
             </h1>
             @if(!$isCartEmpty)
                 <p class="text-xl text-gray-600">
-                    {{ $cartCount }} article{{ $cartCount > 1 ? 's' : '' }} pour un total de {{ number_format($total, 2) }}€
+                    {{ $cartCount }} article{{ $cartCount > 1 ? 's' : '' }} pour un total de {{ number_format($total, 2) }}FCFA
                 </p>
                 
                 {{-- Barre de progression livraison gratuite --}}
                 @if($subtotal < $freeShippingThreshold)
                     <div class="max-w-md mx-auto mt-6 bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-blue-100">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-600">Livraison gratuite dès {{ $freeShippingThreshold }}€</span>
-                            <span class="text-sm font-bold text-blue-600">{{ number_format($savings, 2) }}€ restants</span>
+                            <span class="text-sm font-medium text-gray-600">Livraison gratuite dès {{ $freeShippingThreshold }}FCFA</span>
+                            <span class="text-sm font-bold text-blue-600">{{ number_format($savings, 2) }}FCFA restants</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
                             <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-300" 
@@ -154,9 +154,9 @@
                                             {{-- Prix et quantité --}}
                                             <div class="flex items-center justify-between mt-4">
                                                 <div class="flex items-center space-x-2">
-                                                    <span class="text-2xl font-bold text-gray-900">{{ $item['product']['price'] }}€</span>
+                                                    <span class="text-2xl font-bold text-gray-900">{{ $item['product']['price'] }}FCFA</span>
                                                     @if(isset($item['product']['original_price']) && $item['product']['original_price'] > $item['product']['price'])
-                                                        <span class="text-lg text-gray-500 line-through">{{ $item['product']['original_price'] }}€</span>
+                                                        <span class="text-lg text-gray-500 line-through">{{ $item['product']['original_price'] }}FCFA</span>
                                                     @endif
                                                 </div>
 
@@ -187,7 +187,7 @@
                                                 <div class="text-right">
                                                     <span class="text-sm text-gray-500">Total:</span>
                                                     <p class="text-xl font-bold text-blue-600">
-                                                        {{ number_format($item['product']['price'] * $item['quantity'], 2) }}€
+                                                        {{ number_format($item['product']['price'] * $item['quantity'], 2) }}FCFA
                                                     </p>
                                                 </div>
                                             </div>
@@ -214,20 +214,20 @@
                             {{-- Sous-total --}}
                             <div class="flex items-center justify-between py-2">
                                 <span class="text-gray-600">Sous-total ({{ $cartCount }} articles)</span>
-                                <span class="font-semibold text-gray-900">{{ number_format($subtotal, 2) }}€</span>
+                                <span class="font-semibold text-gray-900">{{ number_format($subtotal, 2) }}FCFA</span>
                             </div>
 
                             {{-- TVA --}}
                             <div class="flex items-center justify-between py-2">
                                 <span class="text-gray-600">TVA ({{ $taxRate }}%)</span>
-                                <span class="font-semibold text-gray-900">{{ number_format($taxAmount, 2) }}€</span>
+                                <span class="font-semibold text-gray-900">{{ number_format($taxAmount, 2) }}FCFA</span>
                             </div>
 
                             {{-- Livraison --}}
                             <div class="flex items-center justify-between py-2">
                                 <span class="text-gray-600">Livraison</span>
                                 @if($shippingCost > 0)
-                                    <span class="font-semibold text-gray-900">{{ number_format($shippingCost, 2) }}€</span>
+                                    <span class="font-semibold text-gray-900">{{ number_format($shippingCost, 2) }}FCFA</span>
                                 @else
                                     <span class="font-semibold text-green-600">GRATUITE ✅</span>
                                 @endif
@@ -238,7 +238,7 @@
                             {{-- Total --}}
                             <div class="flex items-center justify-between py-3">
                                 <span class="text-xl font-bold text-gray-900">Total</span>
-                                <span class="text-2xl font-bold text-blue-600">{{ number_format($total, 2) }}€</span>
+                                <span class="text-2xl font-bold text-blue-600">{{ number_format($total, 2) }}FCFA</span>
                             </div>
                         </div>
 
@@ -359,7 +359,7 @@
                                     {{ $product['brand']['name'] ?? 'Marque inconnue' }}
                                 </p>
                                 <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">{{ $product['name'] ?? 'Nom indisponible' }}</h3>
-                                <p class="text-lg font-bold text-gray-900">{{ $product['price'] ?? '0' }}€</p>
+                                <p class="text-lg font-bold text-gray-900">{{ $product['price'] ?? '0' }}FCFA</p>
                             </div>
                         </div>
                     @endforeach

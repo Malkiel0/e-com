@@ -14,7 +14,7 @@
     <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-2 text-sm font-medium">
         <div class="container mx-auto px-4 flex items-center justify-center space-x-2">
             <span class="animate-pulse">✨</span>
-            <span>Livraison gratuite dès 50€ d'achat • Découvrez nos nouveautés</span>
+            <span>Livraison gratuite dès 50FCFA d'achat • Découvrez nos nouveautés</span>
             <span class="animate-pulse">✨</span>
         </div>
     </div>

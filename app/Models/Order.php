@@ -189,10 +189,10 @@ class Order extends Model
         $message .= "\n**📦 Produits commandés:**\n";
         
         foreach ($this->items as $item) {
-            $message .= "• {$item->product_name} (x{$item->quantity}) - {$item->total_price}€\n";
+            $message .= "• {$item->product_name} (x{$item->quantity}) - {$item->total_price}FCFA\n";
         }
         
-        $message .= "\n💰 **Total:** {$this->total}€\n";
+        $message .= "\n💰 **Total:** {$this->total}FCFA\n";
         $message .= "🚚 **Adresse de livraison:**\n{$this->full_shipping_address}\n\n";
         
         if ($this->customer_notes) {

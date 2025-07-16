@@ -136,7 +136,7 @@ class Products extends Component
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
+            'brand_id' => 'nullable|exists:brands,id',
             'stock_quantity' => 'required|integer|min:0',
             'sku' => 'nullable|string|max:50',
             'volume' => 'nullable|string|max:50',

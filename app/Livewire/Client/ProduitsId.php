@@ -310,7 +310,7 @@ class ProduitsId extends Component
         $message = "{$categoryIcon} Bonjour ! Je suis intéressé(e) par ce produit :\n\n";
         $message .= "✨ *{$this->product->name}*\n";
         $message .= "🏷️ Marque : {$this->product->brand->name}\n";
-        $message .= "💰 Prix : {$this->product->price}€\n";
+        $message .= "💰 Prix : {$this->product->price} FCFA\n";
         
         if ($this->product->volume) {
             $message .= "🧴 Volume : {$this->product->volume}\n";

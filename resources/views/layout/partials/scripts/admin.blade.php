@@ -203,7 +203,7 @@
                     data: {
                         labels: [],
                         datasets: [{
-                            label: 'Ventes (€)',
+                            label: 'Ventes (FCFA)',
                             data: [],
                             borderColor: 'rgb(139, 92, 246)',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -223,7 +223,7 @@
                                 beginAtZero: true,
                                 ticks: {
                                     callback: function(value) {
-                                        return value + '€';
+                                        return value + ' FCFA';
                                     }
                                 }
                             }

@@ -214,7 +214,7 @@ class Parfums extends Component
             $product = Product::find($productId);
             $message = "🌸 Bonjour ! Je suis intéressé(e) par ce parfum :\n\n";
             $message .= "🌺 *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price}€\n";
+            $message .= "💰 Prix : {$product->price} FCFA\n";
             if ($product->volume) {
                 $message .= "💎 Volume : {$product->volume}\n";
             }

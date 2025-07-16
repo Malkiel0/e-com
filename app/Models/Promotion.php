@@ -106,7 +106,7 @@ class Promotion extends Model
             case 'percentage':
                 return "{$this->value}% de réduction";
             case 'fixed_amount':
-                return "{$this->value}€ de réduction";
+                return "{$this->value} FCFA de réduction";
             case 'free_shipping':
                 return "Livraison gratuite";
             case 'buy_x_get_y':
@@ -114,7 +114,7 @@ class Promotion extends Model
                 $getQty = $this->conditions['get_quantity'] ?? 1;
                 return "Achetez {$buyQty}, obtenez {$getQty}";
             case 'bundle':
-                return "Pack à {$this->conditions['bundle_price']}€";
+                return "Pack à {$this->conditions['bundle_price']} FCFA";
             default:
                 return "Promotion spéciale";
         }
@@ -163,7 +163,7 @@ class Promotion extends Model
         if ($this->minimum_amount && $cartTotal < $this->minimum_amount) {
             return [
                 'valid' => false, 
-                'reason' => "Montant minimum requis: {$this->minimum_amount}€"
+                'reason' => "Montant minimum requis: {$this->minimum_amount}FCFA"
             ];
         }
 

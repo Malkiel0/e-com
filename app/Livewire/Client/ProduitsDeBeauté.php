@@ -215,7 +215,7 @@ class ProduitsDeBeauté extends Component
             $product = Product::find($productId);
             $message = "💄 Bonjour ! Je suis intéressé(e) par ce produit de beauté :\n\n";
             $message .= "✨ *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price}€\n";
+            $message .= "💰 Prix : {$product->price}FCFA\n";
             if ($product->skin_type) {
                 $message .= "🌟 Type de peau : {$product->skin_type}\n";
             }

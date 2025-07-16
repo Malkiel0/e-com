@@ -21,7 +21,7 @@ class OrderObserver
         AdminNotification::create([
             'type' => 'new_order',
             'title' => 'Nouvelle commande',
-            'message' => "Commande {$order->number} reçue ({$order->total}€)",
+            'message' => "Commande {$order->number} reçue ({$order->total}FCFA)",
             'icon' => '🛍️',
             'action_url' => route('admin.orders.show', $order),
             'action_text' => 'Voir',

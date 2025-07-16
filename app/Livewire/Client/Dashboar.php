@@ -222,7 +222,7 @@ class Dashboar extends Component
             
             $message = "🌸 Bonjour ! Je suis intéressé(e) par ce produit :\n\n";
             $message .= "📦 *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price}€\n";
+            $message .= "💰 Prix : {$product->price} FCFA\n";
             $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
             $message .= "Pourriez-vous me donner plus d'informations ?";
         } else {

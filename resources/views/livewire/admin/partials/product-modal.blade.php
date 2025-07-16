@@ -245,7 +245,7 @@ style="display: none;">
                                         <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                         </svg>
-                                        <span>Prix de vente (€) *</span>
+                                        <span>Prix de vente (FCFA) *</span>
                                     </span>
                                 </label>
                                 <div class="relative">
@@ -256,7 +256,7 @@ style="display: none;">
                                            placeholder="59.99"
                                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 @error('price') border-red-500 @enderror">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500 text-lg">€</span>
+                                        <span class="text-gray-500 text-lg">FCFA</span>
                                     </div>
                                 </div>
                                 @error('price')
@@ -271,7 +271,7 @@ style="display: none;">
                                         <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a2.5 2.5 0 005 0 2.5 2.5 0 00-5 0z"></path>
                                         </svg>
-                                        <span>Prix barré (€)</span>
+                                        <span>Prix barré (FCFA)</span>
                                     </span>
                                 </label>
                                 <div class="relative">
@@ -282,7 +282,7 @@ style="display: none;">
                                            placeholder="79.99"
                                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500 text-lg">€</span>
+                                        <span class="text-gray-500 text-lg">FCFA</span>
                                     </div>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">Prix de référence pour montrer une promotion</p>

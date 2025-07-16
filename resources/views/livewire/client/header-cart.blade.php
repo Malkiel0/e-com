@@ -74,7 +74,7 @@
                     <p class="text-sm text-gray-600 mt-1">
                         {{ $cartCount }} article{{ $cartCount > 1 ? 's' : '' }}
                         @if($cartCount > 0)
-                            • {{ number_format($cartTotal, 2) }}€
+                            • {{ number_format($cartTotal, 2) }}FCFA
                         @endif
                     </p>
                 </div>
@@ -95,12 +95,12 @@
         @if(!$isEmpty && $freeShippingRemaining > 0)
             <div class="px-6 py-4 bg-blue-50/70 border-b border-gray-100">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-blue-700">🚚 Livraison gratuite dès 50€</span>
-                    <span class="text-sm font-bold text-blue-600">{{ number_format($freeShippingRemaining, 2) }}€ restants</span>
+                    <span class="text-sm font-medium text-blue-700">🚚 Livraison gratuite dès 30000FCFA</span>
+                    <span class="text-sm font-bold text-blue-600">{{ number_format($freeShippingRemaining, 2) }}FCFA restants</span>
                 </div>
                 <div class="w-full bg-blue-200 rounded-full h-2">
                     <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300" 
-                         style="width: {{ min(100, ($cartTotal / 50) * 100) }}%"></div>
+                         style="width: {{ min(100, ($cartTotal / 30000) * 100) }}%"></div>
                 </div>
             </div>
         @elseif(!$isEmpty)
@@ -165,7 +165,7 @@
                                             {{ $item['product']['name'] ?? 'Nom indisponible' }}
                                         </h4>
                                         <p class="text-sm font-bold text-gray-900">
-                                            {{ number_format($item['product']['price'] ?? 0, 2) }}€
+                                            {{ number_format($item['product']['price'] ?? 0, 2) }}FCFA
                                         </p>
                                     </div>
                                     
@@ -197,7 +197,7 @@
                                     {{-- Total ligne --}}
                                     <div class="text-right">
                                         <span class="text-sm font-bold text-{{ isset($item['product']['category']['name']) && strpos(strtolower($item['product']['category']['name']), 'parfum') !== false ? 'purple' : 'pink' }}-600">
-                                            {{ number_format(($item['product']['price'] ?? 0) * ($item['quantity'] ?? 1), 2) }}€
+                                            {{ number_format(($item['product']['price'] ?? 0) * ($item['quantity'] ?? 1), 2) }}FCFA
                                         </span>
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <span class="font-bold text-gray-900 text-lg">Total:</span>
                     <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                        {{ number_format($cartTotal, 2) }}€
+                        {{ number_format($cartTotal, 2) }}FCFA
                     </span>
                 </div>
                 

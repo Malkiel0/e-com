@@ -9,7 +9,7 @@
                 id: 1,
                 type: 'order',
                 title: 'Nouvelle commande',
-                message: 'Commande #1234 reçue (89.99€)',
+                message: 'Commande #1234 reçue (89.99FCFA)',
                 time: '2 min',
                 unread: true,
                 icon: '🛍️'
@@ -60,7 +60,7 @@
                 <!-- Statistiques rapides -->
                 <div class="hidden md:flex items-center space-x-4 text-gray-600">
                     <span>📊 <strong data-stat="todayOrders">{{ $todayOrders ?? 12 }}</strong> commandes aujourd'hui</span>
-                    <span>💰 <strong data-stat="todayRevenue">{{ $todayRevenue ?? '1,247' }}</strong>€ de CA</span>
+                    <span>💰 <strong data-stat="todayRevenue">{{ $todayRevenue ?? '1,247' }}</strong>FCFA de CA</span>
                     <span>👥 <strong data-stat="onlineUsers">{{ $onlineUsers ?? 34 }}</strong> visiteurs en ligne</span>
                 </div>
             </div>

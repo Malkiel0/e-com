@@ -408,7 +408,7 @@
                     </div>
                     <div class="product-info">
                         <h3 class="product-title text-sm">{{ $product->name }}</h3>
-                        <p class="text-sm font-semibold text-gray-900">{{ $product->price }}€</p>
+                        <p class="text-sm font-semibold text-gray-900">{{ $product->price }}FCFA</p>
                     </div>
                 </div>
             @endforeach

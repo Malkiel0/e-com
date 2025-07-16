@@ -205,7 +205,7 @@
                             <span class="text-xl">🚚</span>
                         </div>
                         <h4 class="font-semibold text-sm text-white mb-1">Livraison Gratuite</h4>
-                        <p class="text-xs text-gray-400">Dès 50€ d'achat</p>
+                        <p class="text-xs text-gray-400">Dès 30000 FCFA d'achat</p>
                     </div>
                     <div class="text-center">
                         <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">

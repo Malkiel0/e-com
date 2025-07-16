@@ -166,28 +166,28 @@
                     
                     <!-- Affichage des valeurs -->
                     <div class="flex items-center justify-between text-sm">
-                        <span class="bg-gray-100 px-3 py-1 rounded-lg font-medium">0€</span>
+                        <span class="bg-gray-100 px-3 py-1 rounded-lg font-medium">0 FCFA</span>
                         <span class="text-gray-500">à</span>
-                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg font-medium" x-text="`${priceRange[1]}€`"></span>
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg font-medium" x-text="`${priceRange[1]} FCFA`"></span>
                     </div>
                     
                     <!-- Prix rapides -->
                     <div class="grid grid-cols-2 gap-2 mt-3">
                         <button @click="priceRange = [0, 50]" 
                                 class="p-2 text-xs bg-gray-100 hover:bg-purple-100 rounded-lg transition-colors">
-                            Moins de 50€
+                            Moins de 50 FCFA
                         </button>
                         <button @click="priceRange = [50, 100]" 
                                 class="p-2 text-xs bg-gray-100 hover:bg-purple-100 rounded-lg transition-colors">
-                            50€ - 100€
+                            50 FCFA - 100 FCFA
                         </button>
                         <button @click="priceRange = [100, 200]" 
                                 class="p-2 text-xs bg-gray-100 hover:bg-purple-100 rounded-lg transition-colors">
-                            100€ - 200€
+                            100 FCFA - 200 FCFA
                         </button>
                         <button @click="priceRange = [200, 500]" 
                                 class="p-2 text-xs bg-gray-100 hover:bg-purple-100 rounded-lg transition-colors">
-                            Plus de 200€
+                            Plus de 200 FCFA
                         </button>
                     </div>
                 </div>

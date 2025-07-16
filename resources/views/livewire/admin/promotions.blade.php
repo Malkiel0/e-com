@@ -119,7 +119,7 @@ class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-green-100 text-sm">Économies</p>
-                                    <p class="text-2xl font-bold">{{ number_format($stats['total_savings'], 0) }}€</p>
+                                    <p class="text-2xl font-bold">{{ number_format($stats['total_savings'], 0) }}FCFA</p>
                                 </div>
                                 <svg class="w-8 h-8 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
@@ -143,7 +143,7 @@ class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-pink-100 text-sm">Impact CA</p>
-                                    <p class="text-xl font-bold">{{ $stats['revenue_impact'] >= 0 ? '+' : '' }}{{ number_format($stats['revenue_impact'], 0) }}€</p>
+                                    <p class="text-xl font-bold">{{ $stats['revenue_impact'] >= 0 ? '+' : '' }}{{ number_format($stats['revenue_impact'], 0) }}FCFA</p>
                                 </div>
                                 <svg class="w-8 h-8 text-pink-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
@@ -376,7 +376,7 @@ class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50">
                                     @if($promotion->type === 'percentage')
                                         {{ $promotion->value }}%
                                     @elseif($promotion->type === 'fixed_amount')
-                                        {{ $promotion->value }}€
+                                        {{ $promotion->value }}FCFA
                                     @elseif($promotion->type === 'free_shipping')
                                         GRATUIT
                                     @else
@@ -474,7 +474,7 @@ class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50">
                                 </div>
                                 
                                 @if($promotion->minimum_amount)
-                                    <span class="text-xs text-gray-500">Min: {{ $promotion->minimum_amount }}€</span>
+                                    <span class="text-xs text-gray-500">Min: {{ $promotion->minimum_amount }}FCFA</span>
                                 @endif
                             </div>
 
@@ -605,7 +605,7 @@ class="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50">
                                         @if($promotion->type === 'percentage')
                                             {{ $promotion->value }}% de réduction
                                         @elseif($promotion->type === 'fixed_amount')
-                                            {{ $promotion->value }}€ de réduction
+                                            {{ $promotion->value }}FCFA de réduction
                                         @elseif($promotion->type === 'free_shipping')
                                             Livraison gratuite
                                         @else

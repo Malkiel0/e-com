@@ -55,7 +55,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-2xl font-bold text-white" x-text="quickStats.revenue">1247</p>
-                        <p class="text-xs text-gray-300">CA (€)</p>
+                        <p class="text-xs text-gray-300">CA (FCFA)</p>
                     </div>
                     <div class="w-8 h-8 bg-green-500/30 rounded-lg flex items-center justify-center">
                         <span class="text-sm">💰</span>

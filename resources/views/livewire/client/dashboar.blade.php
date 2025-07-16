@@ -114,13 +114,15 @@
                         <h4 class="font-semibold text-gray-800 mb-4">💰 Prix</h4>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-sm text-gray-600">Prix minimum: {{ $minPrice }}€</label>
+                                <label class="text-sm text-gray-600">Prix minimum:
+                                    {{ number_format($minPrice, 0, ',', ' ') }} FCFA</label>
                                 <input type="range" wire:model.live="minPrice" min="0"
                                     max="{{ $maxPrice }}"
                                     class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
                             </div>
                             <div>
-                                <label class="text-sm text-gray-600">Prix maximum: {{ $maxPrice }}€</label>
+                                <label class="text-sm text-gray-600">Prix maximum:
+                                    {{ number_format($maxPrice, 0, ',', ' ') }} FCFA</label>
                                 <input type="range" wire:model.live="maxPrice" min="{{ $minPrice }}"
                                     max="1000"
                                     class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
@@ -301,13 +303,15 @@
                                             </h3>
 
                                             {{-- Prix --}}
-                                            <div class="flex items-center space-x-2 mb-4">
-                                                <span
-                                                    class="text-2xl font-bold text-gray-900">{{ $product->price }}€</span>
-                                                @if ($product->original_price && $product->price < $product->original_price)
+                                            <div class="mb-4">
+                                                <div class="flex flex-col">
                                                     <span
-                                                        class="text-lg text-gray-500 line-through">{{ $product->original_price }}€</span>
-                                                @endif
+                                                        class="text-2xl font-bold text-gray-900 whitespace-nowrap">{{ number_format($product->price, 0, ',', ' ') }}&nbsp;FCFA</span>
+                                                    @if ($product->original_price && $product->price < $product->original_price)
+                                                        <span
+                                                            class="text-lg text-gray-500 line-through whitespace-nowrap mt-1">{{ number_format($product->original_price, 0, ',', ' ') }}&nbsp;FCFA</span>
+                                                    @endif
+                                                </div>
                                             </div>
 
                                             {{-- Note --}}
@@ -394,7 +398,7 @@
                                                 wire:click="viewProduct({{ $product->id }})">
                                                 {{-- @dump($product->primaryImage) --}}
                                                 @if ($product->primaryImage)
-                                                    <img src="{{asset(Storage::url($product->primaryImage->file_path)) }}"
+                                                    <img src="{{ asset(Storage::url($product->primaryImage->file_path)) }}"
                                                         alt="{{ $product->name }}"
                                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                                                         loading="lazy">
@@ -477,11 +481,13 @@
                                                             <div
                                                                 class="flex md:flex-col items-center md:items-end space-x-2 md:space-x-0">
                                                                 <span
-                                                                    class="text-2xl font-bold text-gray-900">{{ $product->price }}€</span>
+                                                                    class="text-2xl font-bold text-gray-900">{{ number_format($product->price, 0, ',', ' ') }}
+                                                                    FCFA</span>
                                                                 @if ($product->original_price && $product->price < $product->original_price)
                                                                     <div class="md:mt-1">
                                                                         <span
-                                                                            class="text-lg text-gray-500 line-through">{{ $product->original_price }}€</span>
+                                                                            class="text-lg text-gray-500 line-through">{{ number_format($product->original_price, 0, ',', ' ') }}
+                                                                            FCFA</span>
                                                                         <span
                                                                             class="text-sm font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-full ml-2">
                                                                             -{{ $product->discount_percentage }}%
@@ -575,7 +581,17 @@
     {{-- Modal Quick View --}}
     @if ($showQuickView && $selectedProduct)
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            x-data="{ show: @entangle('showQuickView') }" x-show="show" x-transition:enter="transition ease-out duration-300"
+            x-data="{
+                show: @entangle('showQuickView'),
+                currentImage: '{{ $selectedProduct->primaryImage?->file_path }}',
+                showZoom: false,
+                changeImage(imagePath) {
+                    this.currentImage = imagePath;
+                },
+                toggleZoom() {
+                    this.showZoom = !this.showZoom;
+                }
+            }" x-show="show" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
             @click.self="$wire.closeQuickView()">
 
@@ -603,10 +619,14 @@
                         {{-- Images --}}
                         <div class="space-y-4">
                             {{-- Image principale --}}
-                            <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                            <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative cursor-zoom-in"
+                                @click="toggleZoom()">
                                 @if ($selectedProduct->primaryImage)
-                                    <img src="{{ asset('storage/' . $selectedProduct->primaryImage->file_path) }}"
-                                        alt="{{ $selectedProduct->name }}" class="w-full h-full object-cover">
+                                    <img x-bind:src="currentImage ? '{{ asset('storage/') }}/' + currentImage :
+                                        '{{ asset('storage/' . $selectedProduct->primaryImage->file_path) }}'"
+                                        alt="{{ $selectedProduct->name }}"
+                                        class="w-full h-full object-cover transition-transform duration-300"
+                                        x-bind:class="showZoom ? 'scale-150 cursor-zoom-out' : 'scale-100 cursor-zoom-in'">
                                 @else
                                     <div
                                         class="w-full h-full bg-gradient-to-br {{ strpos(strtolower($selectedProduct->category->name), 'parfum') !== false ? 'from-purple-100 to-purple-200' : 'from-pink-100 to-pink-200' }} flex items-center justify-center">
@@ -615,14 +635,23 @@
                                         </span>
                                     </div>
                                 @endif
+
+                                {{-- Indicateur de zoom --}}
+                                <div
+                                    class="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded-lg text-xs">
+                                    <span x-show="!showZoom">🔍 Cliquer pour zoomer</span>
+                                    <span x-show="showZoom">🔍 Cliquer pour dézoomer</span>
+                                </div>
                             </div>
 
                             {{-- Galerie thumbnails --}}
                             @if ($selectedProduct->images->count() > 1)
                                 <div class="grid grid-cols-4 gap-2">
                                     @foreach ($selectedProduct->images->take(4) as $image)
-                                        <div
-                                            class="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-75 transition-opacity">
+                                        <div class="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-75 transition-all border-2"
+                                            x-bind:class="currentImage === '{{ $image->file_path }}' ?
+                                                'border-blue-500 ring-2 ring-blue-200' : 'border-transparent'"
+                                            @click="changeImage('{{ $image->file_path }}')">
                                             <img src="{{ asset('storage/' . $image->file_path) }}"
                                                 alt="{{ $selectedProduct->name }}"
                                                 class="w-full h-full object-cover">
@@ -649,10 +678,12 @@
                                 {{-- Prix --}}
                                 <div class="flex items-center space-x-3 mb-6">
                                     <span
-                                        class="text-3xl font-bold text-gray-900">{{ $selectedProduct->price }}€</span>
+                                        class="text-3xl font-bold text-gray-900">{{ number_format($selectedProduct->price, 0, ',', ' ') }}
+                                        FCFA</span>
                                     @if ($selectedProduct->original_price && $selectedProduct->price < $selectedProduct->original_price)
                                         <span
-                                            class="text-xl text-gray-500 line-through">{{ $selectedProduct->original_price }}€</span>
+                                            class="text-xl text-gray-500 line-through">{{ number_format($selectedProduct->original_price, 0, ',', ' ') }}
+                                            FCFA</span>
                                         <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                                             -{{ $selectedProduct->discount_percentage }}%
                                         </span>
@@ -815,7 +846,8 @@
                 if (!url) {
                     console.error('❌ Aucune URL trouvée dans:', event);
                     alert(
-                        'Erreur: URL WhatsApp non disponible.\nConsultez la console pour plus de détails.');
+                        'Erreur: URL WhatsApp non disponible.\nConsultez la console pour plus de détails.'
+                    );
                     return;
                 }
 

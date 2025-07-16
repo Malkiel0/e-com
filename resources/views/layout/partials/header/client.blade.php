@@ -39,9 +39,9 @@
         proceedToWhatsApp: function() {
             let message = 'Bonjour ! Je souhaite commander les produits suivants :\n\n';
             this.cart.forEach(item => {
-                message += `• ${item.name} - Quantité: ${item.quantity} - Prix: ${item.price}€\n`;
+                message += `• ${item.name} - Quantité: ${item.quantity} - Prix: ${item.price}FCFA\n`;
             });
-            message += `\nTotal: ${this.cartTotal()}€\n\nMerci !`;
+            message += `\nTotal: ${this.cartTotal()}FCFA\n\nMerci !`;
             const whatsappUrl = `https://wa.me/YOUR_WHATSAPP_NUMBER?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
