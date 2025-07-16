@@ -452,7 +452,7 @@
                         <!-- Product Image -->
                         <div class="relative aspect-square overflow-hidden bg-gray-100 rounded-t-xl">
                             @if ($product->images->count() > 0)
-                                <img src="{{ Storage::url($product->images->first()->image_path) }}"
+                                <img src="{{ Storage::url($product->images->first()->file_path) }}"
                                     alt="{{ $product->name }}"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
@@ -480,7 +480,7 @@
                                         Vedette
                                     </span>
                                 @endif
-                                @if (!$product->is_active)
+                                @if ($product->status !== 'active')
                                     <span
                                         class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Inactif
@@ -556,9 +556,9 @@
                                 <div class="flex items-center space-x-1 ml-2">
                                     <button wire:click="toggleStatus({{ $product->id }})"
                                         class="p-1 rounded hover:bg-gray-100 transition-colors duration-200"
-                                        title="{{ $product->is_active ? 'Désactiver' : 'Activer' }}">
+                                        title="{{ $product->status === 'active' ? 'Désactiver' : 'Activer' }}">
                                         <div
-                                            class="w-3 h-3 rounded-full {{ $product->is_active ? 'bg-green-500' : 'bg-gray-400' }}">
+                                            class="w-3 h-3 rounded-full {{ $product->status === 'active' ? 'bg-green-500' : 'bg-gray-400' }}">
                                         </div>
                                     </button>
                                     <button wire:click="toggleFeatured({{ $product->id }})"
@@ -591,9 +591,9 @@
                                 <div class="flex items-center space-x-2">
                                     <span
                                         class="text-lg font-bold text-gray-900">{{ number_format($product->price, 2) }}€</span>
-                                    @if ($product->compare_price)
+                                    @if ($product->original_price)
                                         <span
-                                            class="text-sm text-gray-500 line-through">{{ number_format($product->compare_price, 2) }}€</span>
+                                            class="text-sm text-gray-500 line-through">{{ number_format($product->original_price, 2) }}€</span>
                                     @endif
                                 </div>
                                 <div class="flex items-center text-sm text-gray-600">
@@ -668,7 +668,7 @@
                                         <div class="flex-shrink-0 h-16 w-16">
                                             @if ($product->images->count() > 0)
                                                 <img class="h-16 w-16 rounded-lg object-cover"
-                                                    src="{{ Storage::url($product->images->first()->image_path) }}"
+                                                    src="{{ Storage::url($product->images->first()->file_path) }}"
                                                     alt="{{ $product->name }}">
                                             @else
                                                 <div
@@ -701,9 +701,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
                                         {{ number_format($product->price, 2) }}€</div>
-                                    @if ($product->compare_price)
+                                    @if ($product->original_price)
                                         <div class="text-sm text-gray-500 line-through">
-                                            {{ number_format($product->compare_price, 2) }}€</div>
+                                            {{ number_format($product->original_price, 2) }}€</div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -723,10 +723,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
                                         <button wire:click="toggleStatus({{ $product->id }})"
-                                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 {{ $product->is_active ? 'bg-green-600' : 'bg-gray-200' }}">
+                                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 {{ $product->status === 'active' ? 'bg-green-600' : 'bg-gray-200' }}">
                                             <span class="sr-only">Toggle status</span>
                                             <span
-                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ $product->is_active ? 'translate-x-5' : 'translate-x-0' }}"></span>
+                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ $product->status === 'active' ? 'translate-x-5' : 'translate-x-0' }}"></span>
                                         </button>
                                         @if ($product->is_featured)
                                             <svg class="w-5 h-5 text-yellow-500" fill="currentColor"
@@ -1081,7 +1081,7 @@
                                     @enderror
                                 </div>
 
-                                <!-- Prix de comparaison -->
+                                <!-- Prix original -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         <span class="flex items-center space-x-2">
@@ -1095,7 +1095,7 @@
                                         </span>
                                     </label>
                                     <div class="relative">
-                                        <input type="number" wire:model="compare_price" step="0.01"
+                                        <input type="number" wire:model="original_price" step="0.01"
                                             min="0" placeholder="79.99"
                                             class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
                                         <div
@@ -1146,7 +1146,7 @@
                                 </div>
 
                                 <!-- Volume -->
-                                <div class="lg:col-span-2">
+                                <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         <span class="flex items-center space-x-2">
                                             <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor"
@@ -1160,6 +1160,24 @@
                                     </label>
                                     <input type="text" wire:model="volume"
                                         placeholder="50ml, 100ml, ou autre taille..."
+                                        class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
+                                </div>
+
+                                <!-- Concentration -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <span class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                                                </path>
+                                            </svg>
+                                            <span>Concentration</span>
+                                        </span>
+                                    </label>
+                                    <input type="text" wire:model="concentration"
+                                        placeholder="Eau de Parfum, Eau de Toilette..."
                                         class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
                                 </div>
                             </div>
@@ -1185,10 +1203,9 @@
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         @foreach ($existingImages as $image)
                                             <div class="relative group">
-                                                {{-- Sécurisation de l'accès à l'image, affichage d'une image par défaut si la clé n'existe pas ou si $image est un objet --}}
-<img src="{{ Storage::url($image['image_path'] ?? ($image->image_path ?? 'default.jpg')) }}"
-     alt="Image produit"
-     class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                                                <img src="{{ Storage::url($image['file_path']) }}"
+                                                     alt="Image produit"
+                                                     class="w-full h-32 object-cover rounded-lg border border-gray-300">
                                                 <button type="button"
                                                     wire:click="removeExistingImage({{ $image['id'] }})"
                                                     class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -1243,9 +1260,30 @@
                                             <input type="file" x-ref="fileInput" wire:model="images" multiple
                                                 accept="image/*" id="images" class="sr-only">
                                         </label>
-                                        <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF jusqu'à 10MB chacune</p>
+                                        <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF, WebP jusqu'à 10MB chacune (max 10 images)</p>
                                     </div>
                                 </div>
+
+                                <!-- Afficher les erreurs de validation pour les images -->
+                                @error('images')
+                                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+
+                                @error('images.*')
+                                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
 
                                 <!-- Loading State -->
                                 <div wire:loading wire:target="images" class="mt-4">
@@ -1289,6 +1327,24 @@
                                     <p class="mt-1 text-xs text-gray-500">Séparez chaque ingrédient par une virgule</p>
                                 </div>
 
+                                <!-- Type de peau -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <span class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
+                                            <span>Type de peau</span>
+                                        </span>
+                                    </label>
+                                    <input type="text" wire:model="skin_type"
+                                        placeholder="Tous types de peau, peau sensible, peau grasse..."
+                                        class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
+                                </div>
+
                                 <!-- Meta Title -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -1309,7 +1365,7 @@
                                 </div>
 
                                 <!-- Meta Description -->
-                                <div>
+                                <div class="lg:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         <span class="flex items-center space-x-2">
                                             <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor"
@@ -1342,10 +1398,10 @@
                                                         boutique</p>
                                                 </div>
                                             </div>
-                                            <button type="button" wire:click="$toggle('is_active')"
-                                                :class="$wire.is_active ? 'bg-green-600' : 'bg-gray-200'"
+                                            <button type="button" wire:click="$set('status', '{{ $status === 'active' ? 'inactive' : 'active' }}')"
+                                                :class="$wire.status === 'active' ? 'bg-green-600' : 'bg-gray-200'"
                                                 class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-                                                <span :class="$wire.is_active ? 'translate-x-5' : 'translate-x-0'"
+                                                <span :class="$wire.status === 'active' ? 'translate-x-5' : 'translate-x-0'"
                                                     class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
                                             </button>
                                         </div>
@@ -1369,6 +1425,50 @@
                                                 :class="$wire.is_featured ? 'bg-yellow-500' : 'bg-gray-200'"
                                                 class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
                                                 <span :class="$wire.is_featured ? 'translate-x-5' : 'translate-x-0'"
+                                                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                                            </button>
+                                        </div>
+
+                                        <div
+                                            class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                                            <div class="flex items-center space-x-3">
+                                                <svg class="w-5 h-5 text-blue-500" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="text-sm font-medium text-gray-900">Nouveau produit</h4>
+                                                    <p class="text-sm text-gray-500">Marquer comme nouveau</p>
+                                                </div>
+                                            </div>
+                                            <button type="button" wire:click="$toggle('is_new')"
+                                                :class="$wire.is_new ? 'bg-blue-500' : 'bg-gray-200'"
+                                                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                                <span :class="$wire.is_new ? 'translate-x-5' : 'translate-x-0'"
+                                                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                                            </button>
+                                        </div>
+
+                                        <div
+                                            class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                                            <div class="flex items-center space-x-3">
+                                                <svg class="w-5 h-5 text-purple-500" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                    </path>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="text-sm font-medium text-gray-900">Best-seller</h4>
+                                                    <p class="text-sm text-gray-500">Marquer comme best-seller</p>
+                                                </div>
+                                            </div>
+                                            <button type="button" wire:click="$toggle('is_bestseller')"
+                                                :class="$wire.is_bestseller ? 'bg-purple-500' : 'bg-gray-200'"
+                                                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                                                <span :class="$wire.is_bestseller ? 'translate-x-5' : 'translate-x-0'"
                                                     class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
                                             </button>
                                         </div>
