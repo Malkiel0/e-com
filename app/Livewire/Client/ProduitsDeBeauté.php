@@ -56,7 +56,13 @@ class ProduitsDeBeauté extends Component
                                   ->where('name', 'NOT LIKE', '%eau de%')
                                   ->pluck('id');
         
-        $this->maxPrice = Product::whereIn('category_id', $beautyCategories)->max('price') ?? 1000000;
+        $maxPrice = Product::whereIn('category_id', $beautyCategories)->active()->max('price');
+        $this->maxPrice = $maxPrice ?? 1000000;
+        
+        // S'assurer que minPrice est toujours inférieur à maxPrice
+        if ($this->minPrice >= $this->maxPrice) {
+            $this->minPrice = 0;
+        }
     }
 
     public function updatedSearch()
@@ -74,6 +80,29 @@ class ProduitsDeBeauté extends Component
         $this->resetPage();
     }
 
+    public function updatedSelectedSkinType()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedMinPrice()
+    {
+        // S'assurer que minPrice ne dépasse pas maxPrice
+        if ($this->minPrice > $this->maxPrice) {
+            $this->minPrice = $this->maxPrice;
+        }
+        $this->resetPage();
+    }
+
+    public function updatedMaxPrice()
+    {
+        // S'assurer que maxPrice ne soit pas inférieur à minPrice
+        if ($this->maxPrice < $this->minPrice) {
+            $this->maxPrice = $this->minPrice;
+        }
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortBy === $field) {
@@ -85,17 +114,41 @@ class ProduitsDeBeauté extends Component
         $this->resetPage();
     }
 
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->selectedCategory = '';
+        $this->selectedBrand = '';
+        $this->selectedSkinType = '';
+        $this->minPrice = 0;
+        
+        // ✅ Recalculer le prix max lors du reset (comme Parfums)
+        $beautyCategories = Category::where('name', 'NOT LIKE', '%parfum%')
+                                  ->where('name', 'NOT LIKE', '%fragrance%')
+                                  ->where('name', 'NOT LIKE', '%eau de%')
+                                  ->pluck('id');
+        
+        $maxPrice = Product::whereIn('category_id', $beautyCategories)->active()->max('price');
+        $this->maxPrice = $maxPrice ?? 1000000;
+        
+        $this->sortBy = 'name';
+        $this->sortDirection = 'asc';
+        $this->resetPage();
+    }
+
     public function addToCart($productId, $quantity = 1)
     {
         $product = Product::find($productId);
         
         if (!$product) {
             $this->cartMessage = 'Produit introuvable';
+            $this->showCartSuccess = true;
             return;
         }
 
         if (!$product->is_in_stock) {
             $this->cartMessage = 'Produit en rupture de stock';
+            $this->showCartSuccess = true;
             return;
         }
 
@@ -132,10 +185,9 @@ class ProduitsDeBeauté extends Component
             }
         }
 
-        $this->cartMessage = "💄 {$product->name} ajouté au panier !";
+        $this->cartMessage = "💄 {$product->name} ajouté au panier avec succès !";
         $this->showCartSuccess = true;
         
-        $this->dispatch('hide-cart-success');
         $this->dispatch('cart-updated');
     }
 
@@ -174,6 +226,9 @@ class ProduitsDeBeauté extends Component
             $this->showQuickView = true;
             
             $this->recordProductView($productId);
+            
+            // ✅ Dispatch pour gérer le scroll et s'assurer que la modal est visible
+            $this->dispatch('modal-opened');
         }
     }
 
@@ -181,6 +236,9 @@ class ProduitsDeBeauté extends Component
     {
         $this->showQuickView = false;
         $this->selectedProduct = null;
+        
+        // Dispatch pour rétablir le scroll du body
+        $this->dispatch('modal-closed');
     }
 
     public function recordProductView($productId)
@@ -211,24 +269,44 @@ class ProduitsDeBeauté extends Component
 
     public function contactWhatsApp($productId = null)
     {
-        if ($productId) {
-            $product = Product::find($productId);
-            $message = "💄 Bonjour ! Je suis intéressé(e) par ce produit de beauté :\n\n";
-            $message .= "✨ *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price}FCFA\n";
-            if ($product->skin_type) {
-                $message .= "🌟 Type de peau : {$product->skin_type}\n";
+        try {
+            if ($productId) {
+                $product = Product::find($productId);
+                if (!$product) {
+                    session()->flash('error', 'Produit non trouvé');
+                    return;
+                }
+                
+                $message = "💄 Bonjour ! Je suis intéressé(e) par ce produit de beauté :\n\n";
+                $message .= "✨ *{$product->name}*\n";
+                $message .= "💰 Prix : {$product->price} FCFA\n";
+                if ($product->skin_type) {
+                    $message .= "🌟 Type de peau : {$product->skin_type}\n";
+                }
+                if ($product->category) {
+                    $message .= "💄 Catégorie : {$product->category->name}\n";
+                }
+                $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
+                $message .= "Pourriez-vous me donner plus d'informations sur ce produit ?";
+            } else {
+                $message = "💄 Bonjour ! J'aimerais découvrir votre collection de produits de beauté.";
             }
-            $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
-            $message .= "Pourriez-vous me donner plus d'informations sur ce produit ?";
-        } else {
-            $message = "💄 Bonjour ! J'aimerais découvrir votre collection de produits de beauté.";
-        }
 
-        $encodedMessage = urlencode($message);
-        $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
-        
-        $this->dispatch('open-whatsapp', ['url' => $whatsappUrl]);
+            // ✅ URL propre et encodée (comme Dashboar et Parfums)
+            $encodedMessage = rawurlencode($message);
+            $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
+            
+            // ✅ DISPATCH CORRIGÉ avec structure explicite
+            $this->dispatch('open-whatsapp', 
+                url: $whatsappUrl,
+                message: $message,
+                debug: 'URL générée avec succès'
+            );
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur WhatsApp:', ['error' => $e->getMessage()]);
+            session()->flash('error', 'Erreur lors de la génération du lien WhatsApp');
+        }
     }
 
     public function getProductsProperty()
@@ -239,18 +317,23 @@ class ProduitsDeBeauté extends Component
                                   ->where('name', 'NOT LIKE', '%eau de%')
                                   ->pluck('id');
 
-        // [TEST TEMPORAIRE] On retire les scopes active() et inStock() pour afficher TOUS les produits de beauté, quel que soit leur status ou stock.
-        // Cela permet de diagnostiquer si le problème vient du champ status ou d'un autre filtre.
+        // ✅ Query optimisée (comme Parfums) - Supprimé inStock() pour inclure tous les produits actifs
         $query = Product::with(['category', 'brand', 'images', 'reviews'])
-                       ->whereIn('category_id', $beautyCategories);
+                       ->whereIn('category_id', $beautyCategories)
+                       ->active();
 
-        // Recherche
+        // Recherche améliorée
         if ($this->search) {
             $query->where(function($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('short_description', 'like', '%' . $this->search . '%')
+                  ->orWhere('skin_type', 'like', '%' . $this->search . '%')
                   ->orWhereHas('brand', function($brandQuery) {
                       $brandQuery->where('name', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('category', function($catQuery) {
+                      $catQuery->where('name', 'like', '%' . $this->search . '%');
                   });
             });
         }
@@ -268,10 +351,12 @@ class ProduitsDeBeauté extends Component
             $query->where('skin_type', $this->selectedSkinType);
         }
 
-        // Prix
-        $query->whereBetween('price', [$this->minPrice, $this->maxPrice]);
+        // Prix avec validation
+        $minPrice = max(0, $this->minPrice);
+        $maxPrice = max($minPrice, $this->maxPrice);
+        $query->whereBetween('price', [$minPrice, $maxPrice]);
 
-        // Tri
+        // Tri amélioré
         switch ($this->sortBy) {
             case 'price':
                 $query->orderBy('price', $this->sortDirection);
@@ -302,13 +387,16 @@ class ProduitsDeBeauté extends Component
                       ->where('name', 'NOT LIKE', '%fragrance%')
                       ->where('name', 'NOT LIKE', '%eau de%')
                       ->active()
+                      ->whereHas('products', function($query) {
+                          $query->active();
+                      })
                       ->orderBy('name')
                       ->get();
     }
 
     public function getBrandsProperty()
     {
-        // Récupérer uniquement les marques qui ont des produits de beauté
+        // Récupérer uniquement les marques qui ont des produits de beauté actifs
         $beautyCategories = Category::where('name', 'NOT LIKE', '%parfum%')
                                   ->where('name', 'NOT LIKE', '%fragrance%')
                                   ->where('name', 'NOT LIKE', '%eau de%')
@@ -332,6 +420,7 @@ class ProduitsDeBeauté extends Component
         return Product::whereIn('category_id', $beautyCategories)
                      ->active()
                      ->whereNotNull('skin_type')
+                     ->where('skin_type', '!=', '')
                      ->distinct()
                      ->pluck('skin_type')
                      ->filter()

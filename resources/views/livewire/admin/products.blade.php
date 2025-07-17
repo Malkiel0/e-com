@@ -452,7 +452,7 @@
                         <!-- Product Image -->
                         <div class="relative aspect-square overflow-hidden bg-gray-100 rounded-t-xl">
                             @if ($product->images->count() > 0)
-                                <img src="{{ Storage::url($product->images->first()->file_path) }}"
+                                <img src="{{ Storage::url(($product->images->where('is_primary', true)->first() ?: $product->images->first())->file_path) }}"
                                     alt="{{ $product->name }}"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
@@ -668,7 +668,7 @@
                                         <div class="flex-shrink-0 h-16 w-16">
                                             @if ($product->images->count() > 0)
                                                 <img class="h-16 w-16 rounded-lg object-cover"
-                                                    src="{{ Storage::url($product->images->first()->file_path) }}"
+                                                    src="{{ Storage::url(($product->images->where('is_primary', true)->first() ?: $product->images->first())->file_path) }}"
                                                     alt="{{ $product->name }}">
                                             @else
                                                 <div
@@ -1191,7 +1191,7 @@
                             <!-- Existing Images -->
                             @if (count($existingImages) > 0)
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                                    <h4 class="text-lg font-medium text-gray-900 mb-2 flex items-center">
                                         <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1200,27 +1200,52 @@
                                         </svg>
                                         Images actuelles
                                     </h4>
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <p class="text-sm text-gray-600 mb-4">Cliquez sur le bouton radio pour définir
+                                        l'image principale</p>
+
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                         @foreach ($existingImages as $image)
-                                            <div class="relative group">
+                                            <div
+                                                class="relative group border-2 rounded-lg p-2 transition-all duration-200 {{ $image['is_primary'] ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-blue-300' }}">
+                                                <!-- Image principale selector -->
+                                                <div class="absolute top-3 left-3 z-10">
+                                                    <label class="flex items-center cursor-pointer">
+                                                        <input type="radio" name="primary_image_existing"
+                                                            wire:click="updatePrimaryImage({{ $selectedProductId }}, {{ $image['id'] }})"
+                                                            {{ $image['is_primary'] ? 'checked' : '' }}
+                                                            class="w-4 h-4 text-green-600 bg-white border-gray-300 focus:ring-green-500 focus:ring-2">
+                                                        <span
+                                                            class="ml-1 text-xs font-medium text-gray-700 bg-white bg-opacity-80 px-1 rounded">Principal</span>
+                                                    </label>
+                                                </div>
+
                                                 <img src="{{ Storage::url($image['file_path']) }}"
-                                                     alt="Image produit"
-                                                     class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                                                    alt="Image produit" class="w-full h-28 object-cover rounded-md">
+
+                                                <!-- Badge Principal -->
+                                                @if ($image['is_primary'])
+                                                    <div
+                                                        class="absolute bottom-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                                                        <svg class="w-3 h-3 mr-1" fill="currentColor"
+                                                            viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd"
+                                                                d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                                clip-rule="evenodd"></path>
+                                                        </svg>
+                                                        Principal
+                                                    </div>
+                                                @endif
+
+                                                <!-- Bouton supprimer -->
                                                 <button type="button"
                                                     wire:click="removeExistingImage({{ $image['id'] }})"
-                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    class="absolute top-3 right-3 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                                     </svg>
                                                 </button>
-                                                @if ($image['is_primary'])
-                                                    <div
-                                                        class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                                                        Principal
-                                                    </div>
-                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -1260,14 +1285,16 @@
                                             <input type="file" x-ref="fileInput" wire:model="images" multiple
                                                 accept="image/*" id="images" class="sr-only">
                                         </label>
-                                        <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF, WebP jusqu'à 10MB chacune (max 10 images)</p>
+                                        <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF, WebP jusqu'à 10MB chacune
+                                            (max 10 images)</p>
                                     </div>
                                 </div>
 
                                 <!-- Afficher les erreurs de validation pour les images -->
                                 @error('images')
                                     <p class="mt-2 text-sm text-red-600 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -1277,7 +1304,8 @@
 
                                 @error('images.*')
                                     <p class="mt-2 text-sm text-red-600 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -1398,10 +1426,12 @@
                                                         boutique</p>
                                                 </div>
                                             </div>
-                                            <button type="button" wire:click="$set('status', '{{ $status === 'active' ? 'inactive' : 'active' }}')"
+                                            <button type="button"
+                                                wire:click="$set('status', '{{ $status === 'active' ? 'inactive' : 'active' }}')"
                                                 :class="$wire.status === 'active' ? 'bg-green-600' : 'bg-gray-200'"
                                                 class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-                                                <span :class="$wire.status === 'active' ? 'translate-x-5' : 'translate-x-0'"
+                                                <span
+                                                    :class="$wire.status === 'active' ? 'translate-x-5' : 'translate-x-0'"
                                                     class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
                                             </button>
                                         </div>

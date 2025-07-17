@@ -53,9 +53,16 @@ class Parfums extends Component
         // Récupérer le prix max des parfums uniquement
         $parfumCategories = Category::where('name', 'LIKE', '%parfum%')
                                   ->orWhere('name', 'LIKE', '%fragrance%')
+                                  ->orWhere('name', 'LIKE', '%eau de%')
                                   ->pluck('id');
         
-        $this->maxPrice = Product::whereIn('category_id', $parfumCategories)->max('price') ?? 1000000;
+        $maxPrice = Product::whereIn('category_id', $parfumCategories)->active()->max('price');
+        $this->maxPrice = $maxPrice ?? 1000000;
+        
+        // S'assurer que minPrice est toujours inférieur à maxPrice
+        if ($this->minPrice >= $this->maxPrice) {
+            $this->minPrice = 0;
+        }
     }
 
     public function updatedSearch()
@@ -73,6 +80,29 @@ class Parfums extends Component
         $this->resetPage();
     }
 
+    public function updatedSelectedVolume()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedMinPrice()
+    {
+        // S'assurer que minPrice ne dépasse pas maxPrice
+        if ($this->minPrice > $this->maxPrice) {
+            $this->minPrice = $this->maxPrice;
+        }
+        $this->resetPage();
+    }
+
+    public function updatedMaxPrice()
+    {
+        // S'assurer que maxPrice ne soit pas inférieur à minPrice
+        if ($this->maxPrice < $this->minPrice) {
+            $this->maxPrice = $this->minPrice;
+        }
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortBy === $field) {
@@ -84,17 +114,42 @@ class Parfums extends Component
         $this->resetPage();
     }
 
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->selectedBrand = '';
+        $this->selectedConcentration = '';
+        $this->selectedVolume = '';
+        $this->selectedFragranceFamily = '';
+        $this->minPrice = 0;
+        
+        // Recalculer le prix max lors du reset
+        $parfumCategories = Category::where('name', 'LIKE', '%parfum%')
+                                  ->orWhere('name', 'LIKE', '%fragrance%')
+                                  ->orWhere('name', 'LIKE', '%eau de%')
+                                  ->pluck('id');
+        
+        $maxPrice = Product::whereIn('category_id', $parfumCategories)->active()->max('price');
+        $this->maxPrice = $maxPrice ?? 1000000;
+        
+        $this->sortBy = 'name';
+        $this->sortDirection = 'asc';
+        $this->resetPage();
+    }
+
     public function addToCart($productId, $quantity = 1)
     {
         $product = Product::find($productId);
         
         if (!$product) {
             $this->cartMessage = 'Produit introuvable';
+            $this->showCartSuccess = true;
             return;
         }
 
         if (!$product->is_in_stock) {
             $this->cartMessage = 'Produit en rupture de stock';
+            $this->showCartSuccess = true;
             return;
         }
 
@@ -131,10 +186,9 @@ class Parfums extends Component
             }
         }
 
-        $this->cartMessage = "🌸 {$product->name} ajouté au panier !";
+        $this->cartMessage = "✨ {$product->name} ajouté au panier avec succès !";
         $this->showCartSuccess = true;
         
-        $this->dispatch('hide-cart-success');
         $this->dispatch('cart-updated');
     }
 
@@ -173,6 +227,9 @@ class Parfums extends Component
             $this->showQuickView = true;
             
             $this->recordProductView($productId);
+            
+            // Dispatch pour gérer le scroll et s'assurer que la modal est visible
+            $this->dispatch('modal-opened');
         }
     }
 
@@ -180,6 +237,9 @@ class Parfums extends Component
     {
         $this->showQuickView = false;
         $this->selectedProduct = null;
+        
+        // Dispatch pour rétablir le scroll du body
+        $this->dispatch('modal-closed');
     }
 
     public function recordProductView($productId)
@@ -210,27 +270,44 @@ class Parfums extends Component
 
     public function contactWhatsApp($productId = null)
     {
-        if ($productId) {
-            $product = Product::find($productId);
-            $message = "🌸 Bonjour ! Je suis intéressé(e) par ce parfum :\n\n";
-            $message .= "🌺 *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price} FCFA\n";
-            if ($product->volume) {
-                $message .= "💎 Volume : {$product->volume}\n";
+        try {
+            if ($productId) {
+                $product = Product::find($productId);
+                if (!$product) {
+                    session()->flash('error', 'Produit non trouvé');
+                    return;
+                }
+                
+                $message = "🌸 Bonjour ! Je suis intéressé(e) par ce parfum :\n\n";
+                $message .= "🌺 *{$product->name}*\n";
+                $message .= "💰 Prix : {$product->price} FCFA\n";
+                if ($product->volume) {
+                    $message .= "💎 Volume : {$product->volume}\n";
+                }
+                if ($product->concentration) {
+                    $message .= "✨ Concentration : {$product->concentration}\n";
+                }
+                $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
+                $message .= "Pourriez-vous me donner plus d'informations sur ce parfum ?";
+            } else {
+                $message = "🌸 Bonjour ! J'aimerais découvrir votre collection de parfums.";
             }
-            if ($product->concentration) {
-                $message .= "✨ Concentration : {$product->concentration}\n";
-            }
-            $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
-            $message .= "Pourriez-vous me donner plus d'informations sur ce parfum ?";
-        } else {
-            $message = "🌸 Bonjour ! J'aimerais découvrir votre collection de parfums.";
-        }
 
-        $encodedMessage = urlencode($message);
-        $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
-        
-        $this->dispatch('open-whatsapp', ['url' => $whatsappUrl]);
+            // ✅ URL propre et encodée (comme dans Dashboar)
+            $encodedMessage = rawurlencode($message);
+            $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
+            
+            // ✅ DISPATCH CORRIGÉ avec structure explicite (comme dans Dashboar)
+            $this->dispatch('open-whatsapp', 
+                url: $whatsappUrl,
+                message: $message,
+                debug: 'URL générée avec succès'
+            );
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur WhatsApp:', ['error' => $e->getMessage()]);
+            session()->flash('error', 'Erreur lors de la génération du lien WhatsApp');
+        }
     }
 
     public function getProductsProperty()
@@ -241,18 +318,24 @@ class Parfums extends Component
                                   ->orWhere('name', 'LIKE', '%eau de%')
                                   ->pluck('id');
 
-        // [TEST TEMPORAIRE] On retire les scopes active() et inStock() pour afficher TOUS les produits de la catégorie parfum, quel que soit leur status ou stock.
-        // Cela permet de diagnostiquer si le problème vient du champ status ou d'un autre filtre.
+        // Query avec tous les scopes appropriés
         $query = Product::with(['category', 'brand', 'images', 'reviews'])
-                       ->whereIn('category_id', $parfumCategories);
+                       ->whereIn('category_id', $parfumCategories)
+                       ->active();
 
-        // Recherche
+        // Recherche améliorée
         if ($this->search) {
             $query->where(function($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('short_description', 'like', '%' . $this->search . '%')
+                  ->orWhere('concentration', 'like', '%' . $this->search . '%')
+                  ->orWhere('volume', 'like', '%' . $this->search . '%')
                   ->orWhereHas('brand', function($brandQuery) {
                       $brandQuery->where('name', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('category', function($catQuery) {
+                      $catQuery->where('name', 'like', '%' . $this->search . '%');
                   });
             });
         }
@@ -270,10 +353,12 @@ class Parfums extends Component
             $query->where('volume', $this->selectedVolume);
         }
 
-        // Prix
-        $query->whereBetween('price', [$this->minPrice, $this->maxPrice]);
+        // Prix avec validation
+        $minPrice = max(0, $this->minPrice);
+        $maxPrice = max($minPrice, $this->maxPrice);
+        $query->whereBetween('price', [$minPrice, $maxPrice]);
 
-        // Tri
+        // Tri amélioré
         switch ($this->sortBy) {
             case 'price':
                 $query->orderBy('price', $this->sortDirection);
@@ -299,7 +384,7 @@ class Parfums extends Component
 
     public function getBrandsProperty()
     {
-        // Récupérer uniquement les marques qui ont des parfums
+        // Récupérer uniquement les marques qui ont des parfums actifs
         $parfumCategories = Category::where('name', 'LIKE', '%parfum%')
                                   ->orWhere('name', 'LIKE', '%fragrance%')
                                   ->orWhere('name', 'LIKE', '%eau de%')
@@ -323,6 +408,7 @@ class Parfums extends Component
         return Product::whereIn('category_id', $parfumCategories)
                      ->active()
                      ->whereNotNull('concentration')
+                     ->where('concentration', '!=', '')
                      ->distinct()
                      ->pluck('concentration')
                      ->filter()
@@ -340,6 +426,7 @@ class Parfums extends Component
         return Product::whereIn('category_id', $parfumCategories)
                      ->active()
                      ->whereNotNull('volume')
+                     ->where('volume', '!=', '')
                      ->distinct()
                      ->pluck('volume')
                      ->filter()

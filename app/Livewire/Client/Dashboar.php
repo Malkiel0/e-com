@@ -45,10 +45,15 @@ class Dashboar extends Component
 
     public function mount()
     {
-        $this->maxPrice = Product::max('price') ?? 1000000;
+        $maxPrice = Product::active()->max('price');
+        $this->maxPrice = $maxPrice ?? 1000000;
+        
+        // S'assurer que minPrice est toujours inférieur à maxPrice
+        if ($this->minPrice >= $this->maxPrice) {
+            $this->minPrice = 0;
+        }
     }
 
-    
     public function updatedSearch()
     {
         $this->resetPage();
@@ -64,6 +69,24 @@ class Dashboar extends Component
         $this->resetPage();
     }
 
+    public function updatedMinPrice()
+    {
+        // S'assurer que minPrice ne dépasse pas maxPrice
+        if ($this->minPrice > $this->maxPrice) {
+            $this->minPrice = $this->maxPrice;
+        }
+        $this->resetPage();
+    }
+
+    public function updatedMaxPrice()
+    {
+        // S'assurer que maxPrice ne soit pas inférieur à minPrice
+        if ($this->maxPrice < $this->minPrice) {
+            $this->maxPrice = $this->minPrice;
+        }
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortBy === $field) {
@@ -75,17 +98,31 @@ class Dashboar extends Component
         $this->resetPage();
     }
 
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->selectedCategory = '';
+        $this->selectedBrand = '';
+        $this->minPrice = 0;
+        $this->maxPrice = 1000000;
+        $this->sortBy = 'name';
+        $this->sortDirection = 'asc';
+        $this->resetPage();
+    }
+
     public function addToCart($productId, $quantity = 1)
     {
         $product = Product::find($productId);
         
         if (!$product) {
             $this->cartMessage = 'Produit introuvable';
+            $this->showCartSuccess = true;
             return;
         }
 
         if (!$product->is_in_stock) {
             $this->cartMessage = 'Produit en rupture de stock';
+            $this->showCartSuccess = true;
             return;
         }
 
@@ -122,13 +159,9 @@ class Dashboar extends Component
             }
         }
 
-        $this->cartMessage = "✨ {$product->name} ajouté au panier !";
+        $this->cartMessage = "✨ {$product->name} ajouté au panier avec succès !";
         $this->showCartSuccess = true;
         
-        // Cacher le message après 3 secondes
-        $this->dispatch('hide-cart-success');
-        
-        // Mettre à jour le compteur de panier
         $this->dispatch('cart-updated');
     }
 
@@ -166,8 +199,10 @@ class Dashboar extends Component
             $this->selectedProduct = $product;
             $this->showQuickView = true;
             
-            // Enregistrer dans l'historique
             $this->recordProductView($productId);
+            
+            // Dispatch pour gérer le scroll mais ne pas bloquer le body
+            $this->dispatch('modal-opened');
         }
     }
 
@@ -180,6 +215,9 @@ class Dashboar extends Component
     {
         $this->showQuickView = false;
         $this->selectedProduct = null;
+        
+        // Dispatch pour rétablir le scroll du body
+        $this->dispatch('modal-closed');
     }
 
     public function recordProductView($productId)
@@ -211,62 +249,67 @@ class Dashboar extends Component
     }
 
     public function contactWhatsApp($productId = null)
-{
-    try {
-        if ($productId) {
-            $product = Product::find($productId);
-            if (!$product) {
-                session()->flash('error', 'Produit non trouvé');
-                return;
+    {
+        try {
+            if ($productId) {
+                $product = Product::find($productId);
+                if (!$product) {
+                    session()->flash('error', 'Produit non trouvé');
+                    return;
+                }
+                
+                $message = "🌸 Bonjour ! Je suis intéressé(e) par ce produit :\n\n";
+                $message .= "📦 *{$product->name}*\n";
+                $message .= "💰 Prix : {$product->price} FCFA\n";
+                $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
+                $message .= "Pourriez-vous me donner plus d'informations ?";
+            } else {
+                $message = "🌸 Bonjour ! J'aimerais avoir des informations sur vos produits.";
             }
-            
-            $message = "🌸 Bonjour ! Je suis intéressé(e) par ce produit :\n\n";
-            $message .= "📦 *{$product->name}*\n";
-            $message .= "💰 Prix : {$product->price} FCFA\n";
-            $message .= "🔗 " . route('product.show', $product->slug) . "\n\n";
-            $message .= "Pourriez-vous me donner plus d'informations ?";
-        } else {
-            $message = "🌸 Bonjour ! J'aimerais avoir des informations sur vos produits.";
-        }
 
-        // ✅ URL propre et encodée
-        $encodedMessage = rawurlencode($message);
-        $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
-        
-        // 🐛 DEBUG
-        \Log::info('WhatsApp Debug:', [
-            'productId' => $productId,
-            'message' => $message,
-            'url' => $whatsappUrl,
-            'whatsappNumber' => $this->whatsappNumber
-        ]);
-        
-        // ✅ DISPATCH CORRIGÉ avec structure explicite
-        $this->dispatch('open-whatsapp', 
-            url: $whatsappUrl,  // ← Nouveau format Livewire
-            message: $message,
-            debug: 'URL générée avec succès'
-        );
-        
-    } catch (\Exception $e) {
-        \Log::error('Erreur WhatsApp:', ['error' => $e->getMessage()]);
-        session()->flash('error', 'Erreur lors de la génération du lien WhatsApp');
+            // ✅ URL propre et encodée
+            $encodedMessage = rawurlencode($message);
+            $whatsappUrl = "https://wa.me/{$this->whatsappNumber}?text={$encodedMessage}";
+            
+            // 🐛 DEBUG
+            \Log::info('WhatsApp Debug:', [
+                'productId' => $productId,
+                'message' => $message,
+                'url' => $whatsappUrl,
+                'whatsappNumber' => $this->whatsappNumber
+            ]);
+            
+            // ✅ DISPATCH CORRIGÉ avec structure explicite
+            $this->dispatch('open-whatsapp', 
+                url: $whatsappUrl,  // ← Nouveau format Livewire
+                message: $message,
+                debug: 'URL générée avec succès'
+            );
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur WhatsApp:', ['error' => $e->getMessage()]);
+            session()->flash('error', 'Erreur lors de la génération du lien WhatsApp');
+        }
     }
-}
 
     public function getProductsProperty()
     {
-        // [TEST TEMPORAIRE] On retire le scope active() pour afficher TOUS les produits, quel que soit leur status.
-        // Cela permet de diagnostiquer si le problème vient du champ status ou d'un autre filtre.
-        $query = Product::with(['category', 'brand', 'images', 'reviews']);
+        // Query avec tous les scopes appropriés
+        $query = Product::with(['category', 'brand', 'images', 'reviews'])
+                       ->active()
+                       ->inStock();
 
-        // Recherche
+        // Recherche améliorée
         if ($this->search) {
             $query->where(function($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('short_description', 'like', '%' . $this->search . '%')
                   ->orWhereHas('brand', function($brandQuery) {
                       $brandQuery->where('name', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('category', function($catQuery) {
+                      $catQuery->where('name', 'like', '%' . $this->search . '%');
                   });
             });
         }
@@ -280,10 +323,12 @@ class Dashboar extends Component
             $query->where('brand_id', $this->selectedBrand);
         }
 
-        // Prix
-        $query->whereBetween('price', [$this->minPrice, $this->maxPrice]);
+        // Prix avec validation
+        $minPrice = max(0, $this->minPrice);
+        $maxPrice = max($minPrice, $this->maxPrice);
+        $query->whereBetween('price', [$minPrice, $maxPrice]);
 
-        // Tri
+        // Tri amélioré
         switch ($this->sortBy) {
             case 'price':
                 $query->orderBy('price', $this->sortDirection);
@@ -309,12 +354,22 @@ class Dashboar extends Component
 
     public function getCategoriesProperty()
     {
-        return Category::active()->orderBy('name')->get();
+        return Category::active()
+                      ->whereHas('products', function($query) {
+                          $query->active()->inStock();
+                      })
+                      ->orderBy('name')
+                      ->get();
     }
 
     public function getBrandsProperty()
     {
-        return Brand::active()->orderBy('name')->get();
+        return Brand::active()
+                   ->whereHas('products', function($query) {
+                       $query->active()->inStock();
+                   })
+                   ->orderBy('name')
+                   ->get();
     }
 
     public function getUserWishlistProperty()
